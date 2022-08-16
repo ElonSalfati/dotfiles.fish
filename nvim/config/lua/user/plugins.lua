@@ -195,7 +195,7 @@ packer.startup(function(use)
 			require("luasnip.loaders.from_vscode").load()
 			require("user.lsp")
 			require("user.symbols-outline")
-			require("user.cmp")
+			-- require("user.cmp")
 		end,
 	})
 

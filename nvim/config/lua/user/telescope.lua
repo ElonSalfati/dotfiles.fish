@@ -6,8 +6,8 @@ telescope.setup({
 		mappings = {
 			i = {
 				["<esc>"] = actions.close,
-				["<Tab>"] = actions.move_selection_previous,
-				["<S-Tab>"] = actions.move_selection_next,
+				-- ["<Tab>"] = actions.move_selection_previous,
+				-- ["<S-Tab>"] = actions.move_selection_next,
 			},
 		},
 		vimgrep_arguments = {

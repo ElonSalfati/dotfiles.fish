@@ -192,6 +192,11 @@ packer.startup(function(use)
 		},
 		config = function()
 			require("lspkind").init()
+			require("luasnip").setup({
+				-- see: https://github.com/L3MON4D3/LuaSnip/issues/525
+				region_check_events = "CursorHold,InsertLeave,InsertEnter",
+				delete_check_events = "TextChanged,InsertEnter",
+			})
 			require("luasnip.loaders.from_vscode").load()
 			require("user.lsp")
 			require("user.symbols-outline")

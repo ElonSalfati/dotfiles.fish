@@ -22,12 +22,13 @@ cmp.setup({
 		},
 	},
 	completion = {
-		keyword_length = 2,
+		keyword_length = 3,
 	},
 	mapping = cmp.mapping.preset.insert({
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		["<C-Space>"] = cmp.mapping.complete(),
+		["<C-e>"] = cmp.mapping.abort(),
 		["<CR>"] = cmp.mapping.confirm({
 			behavior = cmp.ConfirmBehavior.Replace,
 			select = true,
@@ -71,9 +72,13 @@ cmp.setup({
 	sources = cmp.config.sources({
 		{ name = "nvim_lsp_signature_help" },
 		{ name = "nvim_lsp" },
-		{ name = "luasnip" },
+		{
+			name = "luasnip",
+			keyword_length = 2,
+			priority = 50,
+		},
+	}, {
 		{ name = "buffer" },
-		{ name = "nvim_lua" },
 		{ name = "path" },
 		{ name = "emoji" },
 		{ name = "calc" },
@@ -101,4 +106,5 @@ cmp.setup.cmdline("/", {
 	},
 })
 
-cmp.event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done({ map_char = { tex = "" } }))
+local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())

@@ -26,10 +26,12 @@ float-small-windows: true
 floating:
   - br.com.itau.aplicativoitau
   - com.albertogh.Subtitles
+  - com.apple.PhotoBooth
   - com.apple.iCal
   - com.apple.mail
   - com.apple.systempreferences
   - com.colliderli.iina
+  - com.kapeli.dashdoc
   - com.mr-brightside.Parcel
   - com.yubico.ykman
   - com.zsa.wally

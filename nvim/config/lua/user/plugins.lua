@@ -44,7 +44,8 @@ packer.startup(function(use)
 	})
 
 	use({
-		"sainnhe/gruvbox-material",
+		"catppuccin/nvim",
+		as = "catppuccin",
 		config = function()
 			require("user.colorscheme")
 		end,
@@ -104,15 +105,16 @@ packer.startup(function(use)
 	use({
 		"akinsho/bufferline.nvim",
 		requires = {
-			"famiu/bufdelete.nvim",
+			"mhinz/vim-sayonara",
 			"kyazdani42/nvim-web-devicons",
 		},
 		config = function()
 			require("bufferline").setup({
 				options = {
 					diagnostics = "nvim_lsp",
-					close_command = "Bdelete! %d", -- can be a string | function, see "Mouse actions"
-					right_mouse_command = "Bdelete! %d", -- can be a string | function, see "Mouse actions"
+					close_command = "Sayonara!", -- can be a string | function, see "Mouse actions"
+					right_mouse_command = "Sayonara!", -- can be a string | function, see "Mouse actions"
+					highlights = require("catppuccin.groups.integrations.bufferline").get(),
 				},
 			})
 		end,
@@ -227,7 +229,6 @@ packer.startup(function(use)
 		requires = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			"nvim-treesitter/nvim-treesitter-context",
-			"lewis6991/spellsitter.nvim",
 		},
 	})
 

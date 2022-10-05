@@ -1,8 +1,8 @@
 local options = {
 	compatible = false,
-	clipboard = "unnamedplus",
+	-- clipboard = "unnamedplus",
 	hidden = true,
-	updatetime = 300, -- faster update times
+	updatetime = 1000, -- faster update times, default 4000
 	mouse = "a",
 	inccommand = "split",
 	splitbelow = true,
@@ -39,6 +39,7 @@ local options = {
 	list = false,
 	listchars = "eol:↲,tab:» ,trail:·,extends:<,precedes:>,conceal:┊,nbsp:␣",
 	grepprg = "rg --vimgrep --smart-case --follow",
+	-- cmdheight = 0, https://github.com/hrsh7th/nvim-cmp/pull/1196
 }
 
 vim.opt.shortmess:append("c")

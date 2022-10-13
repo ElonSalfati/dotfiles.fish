@@ -1,6 +1,6 @@
 local options = {
 	compatible = false,
-	-- clipboard = "unnamedplus",
+	clipboard = "unnamedplus",
 	hidden = true,
 	updatetime = 1000, -- faster update times, default 4000
 	mouse = "a",

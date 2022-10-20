@@ -1,24 +1,6 @@
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-local capabilities = cmp_nvim_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities()) or {}
-
-capabilities.textDocument.completion.completionItem = {
-	documentationFormat = { "markdown", "plaintext" },
-	snippetSupport = true,
-	preselectSupport = true,
-	insertReplaceSupport = true,
-	labelDetailsSupport = true,
-	deprecatedSupport = true,
-	commitCharactersSupport = true,
-	tagSupport = { valueSet = { 1 } },
-	resolveSupport = {
-		properties = {
-			"documentation",
-			"detail",
-			"additionalTextEdits",
-		},
-	},
-}
+local capabilities = cmp_nvim_lsp.default_capabilities()
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -40,8 +22,10 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap("n", "<leader>D", "<cmd>Telescope lsp_type_definitions<CR>", opts)
 	buf_set_keymap("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
 	buf_set_keymap("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
-	-- buf_set_keymap("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+	-- buf_set_keymap( "n", "<leader>e", "<cmd>lua vim.diagnostic.open_float(nil, { focusable = false })<CR>", opts)
 	buf_set_keymap("n", "<leader>lr", "<cmd>LspRestart<CR>", opts)
+	buf_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_next({ float = false })<CR>", opts)
+	buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_prev({ float = false })<CR>", opts)
 
 	if client.server_capabilities.documentFormattingProvider and client.name ~= "sumneko_lua" then
 		vim.api.nvim_create_autocmd({ "BufWritePre" }, {
@@ -92,11 +76,6 @@ local on_attach = function(client, bufnr)
 	end
 end
 
-require("mason").setup()
-require("mason-lspconfig").setup({
-	automatic_installation = true,
-})
-
 local lspconfig = require("lspconfig")
 lspconfig.gopls.setup({
 	capabilities = capabilities,
@@ -126,6 +105,16 @@ lspconfig.yamlls.setup({
 			schemas = schemas,
 		},
 	},
+})
+
+lspconfig.html.setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
+lspconfig.jsonls.setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
 })
 
 lspconfig.bashls.setup({
@@ -175,6 +164,16 @@ lspconfig.prosemd_lsp.setup({
 	on_attach = on_attach,
 })
 
+lspconfig.grammarly.setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
+lspconfig.taplo.setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
 -- organize imports
 -- https://github.com/neovim/nvim-lspconfig/issues/115#issuecomment-902680058
 function OrganizeImports(timeoutms)
@@ -205,8 +204,24 @@ null_ls.setup({
 	on_attach = on_attach,
 })
 
+require("mason").setup()
+require("mason-lspconfig").setup({
+	automatic_installation = true,
+})
+
 -- setup diagnostics
-vim.diagnostic.config({ virtual_text = false })
+vim.diagnostic.config({
+	virtual_text = false,
+	severity_sort = true,
+	float = {
+		focusable = false,
+		style = "minimal",
+		border = "rounded",
+		source = "always",
+		header = "",
+		prefix = "",
+	},
+})
 vim.api.nvim_create_autocmd({ "CursorHold" }, {
 	callback = function()
 		if vim.lsp.buf.server_ready() then
@@ -216,7 +231,7 @@ vim.api.nvim_create_autocmd({ "CursorHold" }, {
 	group = vim.api.nvim_create_augroup("LSPDiagnosticsHold", { clear = true }),
 })
 
--- set up LSP signs
+-- set up diagnostic signs
 for type, icon in pairs({
 	Error = "",
 	Warn = "",
@@ -226,3 +241,11 @@ for type, icon in pairs({
 	local hl = "DiagnosticSign" .. type
 	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
+
+-- change documentation to be rouded and non-focusable...
+-- any time I focus into one of these, is by accident, and it always take me
+-- a couple of seconds to figure out what I did.
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+	border = "rounded",
+	focusable = false,
+})

@@ -66,7 +66,6 @@ packer.startup(function(use)
 					spinner = "dots",
 				},
 				window = {
-					relative = "win",
 					blend = 0,
 				},
 			})
@@ -102,12 +101,16 @@ packer.startup(function(use)
 
 	use({
 		"akinsho/bufferline.nvim",
-		after = "nvim-web-devicons",
+		after = {
+			"nvim-web-devicons",
+			"catppuccin",
+		},
 		requires = {
 			"mhinz/vim-sayonara",
 		},
 		config = function()
 			require("bufferline").setup({
+				highlights = require("catppuccin.groups.integrations.bufferline").get(),
 				options = {
 					diagnostics = "nvim_lsp",
 					close_command = "Sayonara!",
@@ -199,11 +202,11 @@ packer.startup(function(use)
 			require("lspkind").init()
 			require("luasnip").setup({
 				-- see: https://github.com/L3MON4D3/LuaSnip/issues/525
-				region_check_events = "CursorHold,InsertLeave,InsertEnter",
-				delete_check_events = "TextChanged,InsertEnter",
+				region_check_events = "InsertEnter",
+				delete_check_events = "InsertLeave",
 			})
+			require("luasnip.loaders.from_vscode").lazy_load()
 			require("nvim-autopairs").setup()
-			require("luasnip.loaders.from_vscode").load()
 			require("user.lsp")
 			require("user.symbols-outline")
 			require("user.cmp")
@@ -250,12 +253,19 @@ packer.startup(function(use)
 
 	use({
 		"TimUntersberger/neogit",
+		requires = {
+			"sindrets/diffview.nvim",
+			"nvim-lua/plenary.nvim",
+		},
 		config = function()
 			require("neogit").setup({
 				disable_commit_confirmation = true,
 				disable_context_highlighting = true,
 				disable_signs = true,
 				disable_hint = true,
+				integrations = {
+					diffview = true,
+				},
 			})
 			require("user.remap").nnoremap("<leader>gs", ":Neogit<CR>")
 		end,
@@ -265,6 +275,13 @@ packer.startup(function(use)
 		"vim-test/vim-test",
 		config = function()
 			require("user.test")
+		end,
+	})
+
+	use({
+		"rcarriga/nvim-notify",
+		config = function()
+			vim.notify = require("notify")
 		end,
 	})
 
@@ -308,7 +325,7 @@ end
 
 -- Autocommand that reloads neovim whenever you save the plugins.lua file
 vim.api.nvim_create_autocmd("BufWritePost", {
-	command = "source <afile> | PackerCompile",
+	command = "source <afile> | PackerSync",
 	group = vim.api.nvim_create_augroup("Packer", { clear = true }),
 	pattern = "plugins.lua",
 })

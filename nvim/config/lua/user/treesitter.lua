@@ -26,6 +26,7 @@ require("nvim-treesitter.configs").setup({
 		"scss",
 		"sql",
 		"toml",
+		"vhs",
 		"vim",
 		"yaml",
 	},
@@ -92,5 +93,11 @@ require("nvim-treesitter.configs").setup({
 				["iv"] = "@variable.inner",
 			},
 		},
+	},
+})
+
+vim.filetype.add({
+	extension = {
+		tape = "vhs",
 	},
 })

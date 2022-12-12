@@ -21,16 +21,32 @@ packer.startup(function(use)
 	use("antoinemadec/FixCursorHold.nvim")
 	use("github/copilot.vim")
 	use({
-		"lewis6991/impatient.nvim",
+		"rmagatti/auto-session",
 		config = function()
-			require("impatient").enable_profile()
+			require("user.session")
 		end,
 	})
 
 	use({
-		"rmagatti/auto-session",
+		"catppuccin/nvim",
+		as = "catppuccin",
 		config = function()
-			require("user.session")
+			require("user.colorscheme")
+		end,
+	})
+
+	use({
+		"rcarriga/nvim-notify",
+		after = "catppuccin",
+		config = function()
+			vim.notify = require("notify")
+			vim.notify.setup({
+				render = "minimal",
+				stages = "fade",
+				on_open = function(win)
+					vim.api.nvim_win_set_config(win, { focusable = false })
+				end,
+			})
 		end,
 	})
 
@@ -40,14 +56,6 @@ packer.startup(function(use)
 			require("nvim-web-devicons").setup({
 				default = true,
 			})
-		end,
-	})
-
-	use({
-		"catppuccin/nvim",
-		as = "catppuccin",
-		config = function()
-			require("user.colorscheme")
 		end,
 	})
 
@@ -68,18 +76,6 @@ packer.startup(function(use)
 				window = {
 					blend = 0,
 				},
-			})
-		end,
-	})
-
-	use({
-		"Pocco81/auto-save.nvim",
-		config = function()
-			require("auto-save").setup({
-				trigger_events = {
-					"FocusLost",
-				},
-				write_all_buffers = true,
 			})
 		end,
 	})
@@ -113,17 +109,8 @@ packer.startup(function(use)
 				highlights = require("catppuccin.groups.integrations.bufferline").get(),
 				options = {
 					diagnostics = "nvim_lsp",
-					close_command = "Sayonara!",
-					right_mouse_command = "Sayonara!",
 				},
 			})
-		end,
-	})
-
-	use({
-		"akinsho/toggleterm.nvim",
-		config = function()
-			require("user.toggleterm")
 		end,
 	})
 
@@ -142,13 +129,6 @@ packer.startup(function(use)
 	})
 
 	use({
-		"folke/trouble.nvim",
-		config = function()
-			require("user.trouble")
-		end,
-	})
-
-	use({
 		"folke/todo-comments.nvim",
 		config = function()
 			require("user.todo")
@@ -157,12 +137,26 @@ packer.startup(function(use)
 
 	use({
 		"nvim-telescope/telescope.nvim",
+		after = { "harpoon" },
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope-github.nvim",
+		},
 		config = function()
 			require("user.telescope")
 		end,
-		requires = {
-			"nvim-lua/plenary.nvim",
-		},
+	})
+
+	use({
+		"ThePrimeagen/harpoon",
+		config = function()
+			local opts = { noremap = true, silent = true }
+			local harpoon = require("harpoon.ui")
+			vim.keymap.set("n", "[j", harpoon.nav_prev, opts)
+			vim.keymap.set("n", "[k", harpoon.nav_next, opts)
+			vim.keymap.set("n", "<leader>m", require("harpoon.mark").add_file, opts)
+			vim.keymap.set("n", "<leader>fk", require("harpoon.ui").toggle_quick_menu, opts)
+		end,
 	})
 
 	-- the whole lsp, luasnip and cmp gang
@@ -196,6 +190,9 @@ packer.startup(function(use)
 
 			-- autopairs (x cmp)
 			"windwp/nvim-autopairs",
+
+			-- hints
+			"simrat39/inlay-hints.nvim",
 		},
 		config = function()
 			require("lspkind").init()
@@ -232,18 +229,6 @@ packer.startup(function(use)
 	})
 
 	use({
-		"mfussenegger/nvim-dap",
-		config = function()
-			require("user.debug")
-		end,
-		requires = {
-			"leoluz/nvim-dap-go",
-			"rcarriga/nvim-dap-ui",
-			"theHamsta/nvim-dap-virtual-text",
-		},
-	})
-
-	use({
 		"lewis6991/gitsigns.nvim",
 		config = function()
 			require("gitsigns").setup()
@@ -253,7 +238,6 @@ packer.startup(function(use)
 	use({
 		"TimUntersberger/neogit",
 		requires = {
-			"sindrets/diffview.nvim",
 			"nvim-lua/plenary.nvim",
 		},
 		config = function()
@@ -262,11 +246,12 @@ packer.startup(function(use)
 				disable_context_highlighting = true,
 				disable_signs = true,
 				disable_hint = true,
-				integrations = {
-					diffview = true,
-				},
 			})
-			require("user.remap").nnoremap("<leader>gs", ":Neogit<CR>")
+			vim.keymap.set("n", "<leader>gs", function()
+				require("neogit").open({
+					kind = "replace",
+				})
+			end, { noremap = true, silent = true })
 		end,
 	})
 
@@ -274,13 +259,6 @@ packer.startup(function(use)
 		"vim-test/vim-test",
 		config = function()
 			require("user.test")
-		end,
-	})
-
-	use({
-		"rcarriga/nvim-notify",
-		config = function()
-			vim.notify = require("notify")
 		end,
 	})
 
@@ -299,9 +277,15 @@ packer.startup(function(use)
 		end,
 	})
 
+	use({
+		"kylechui/nvim-surround",
+		config = function()
+			require("nvim-surround").setup({})
+		end,
+	})
+
 	use("editorconfig/editorconfig-vim")
 	use("tpope/vim-repeat")
-	use("tpope/vim-surround")
 	use("tpope/vim-abolish")
 	use("tpope/vim-eunuch")
 	-- use("dstein64/vim-startuptime")

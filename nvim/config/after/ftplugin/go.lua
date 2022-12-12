@@ -1,20 +1,24 @@
 vim.opt_local.formatoptions:append("jno")
 
-local function restart()
+local function restart(name)
 	local configs = require("lspconfig.configs")
-	for _, client in ipairs(vim.lsp.get_active_clients()) do
-		if client.name == "gopls" then
-			vim.notify("stopping client: " .. client.name)
-			client.stop()
-			vim.defer_fn(function()
-				configs[client.name].launch()
-				vim.notify("launching client: " .. client.name)
-			end, 500)
-		end
+	local bufnr = vim.api.nvim_get_current_buf()
+	for _, client in
+		ipairs(vim.lsp.get_active_clients({
+			bufnr = bufnr,
+			name = name,
+		}))
+	do
+		vim.notify("Restarting " .. client.name .. "...")
+		client.stop()
+		vim.defer_fn(function()
+			configs[client.name].launch()
+		end, 500)
 	end
 end
 
 local function tidy()
+	vim.notify("Running `go mod tidy`...")
 	local uv = vim.loop
 	local stdout = uv.new_pipe(false)
 	local stderr = uv.new_pipe(false)
@@ -45,7 +49,9 @@ local function tidy()
 			stderr:close()
 			handle:close()
 			vim.schedule(function()
-				restart()
+				for _, name in ipairs({ "gopls", "golangci_lint_ls" }) do
+					restart(name)
+				end
 			end)
 		end)
 	)
@@ -57,5 +63,4 @@ end
 vim.api.nvim_create_user_command("GoModTidy", tidy, vim.tbl_extend("force", { desc = "go mod tidy" }, {}))
 
 local opts = { noremap = true, silent = true }
-local keymap = vim.api.nvim_set_keymap
-keymap("n", "<leader>gmt", ":GoModTidy<CR>", opts)
+vim.keymap.set("n", "<leader>gmt", ":GoModTidy<CR>", opts)

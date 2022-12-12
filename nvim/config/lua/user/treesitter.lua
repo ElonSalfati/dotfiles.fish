@@ -18,6 +18,8 @@ require("nvim-treesitter.configs").setup({
 		"hcl",
 		"html",
 		"javascript",
+		"typescript",
+		"tsx",
 		"lua",
 		"make",
 		"markdown",

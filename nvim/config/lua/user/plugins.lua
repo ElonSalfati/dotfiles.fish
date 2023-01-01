@@ -37,7 +37,6 @@ packer.startup(function(use)
 
 	use({
 		"rcarriga/nvim-notify",
-		after = "catppuccin",
 		config = function()
 			vim.notify = require("notify")
 			vim.notify.setup({
@@ -101,11 +100,9 @@ packer.startup(function(use)
 			"nvim-web-devicons",
 			"catppuccin",
 		},
-		requires = {
-			"mhinz/vim-sayonara",
-		},
 		config = function()
 			require("bufferline").setup({
+				---@diagnostic disable-next-line: assign-type-mismatch
 				highlights = require("catppuccin.groups.integrations.bufferline").get(),
 				options = {
 					diagnostics = "nvim_lsp",
@@ -144,18 +141,6 @@ packer.startup(function(use)
 		},
 		config = function()
 			require("user.telescope")
-		end,
-	})
-
-	use({
-		"ThePrimeagen/harpoon",
-		config = function()
-			local opts = { noremap = true, silent = true }
-			local harpoon = require("harpoon.ui")
-			vim.keymap.set("n", "[j", harpoon.nav_prev, opts)
-			vim.keymap.set("n", "[k", harpoon.nav_next, opts)
-			vim.keymap.set("n", "<leader>m", require("harpoon.mark").add_file, opts)
-			vim.keymap.set("n", "<leader>fk", require("harpoon.ui").toggle_quick_menu, opts)
 		end,
 	})
 
@@ -221,10 +206,18 @@ packer.startup(function(use)
 		run = ":TSUpdate",
 		config = function()
 			require("user.treesitter")
+			local neogen = require("neogen")
+			neogen.setup({})
+			vim.keymap.set("n", "<Leader>nf", neogen.generate, {
+				noremap = true,
+				silent = true,
+				desc = "Neogen generate",
+			})
 		end,
 		requires = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			"nvim-treesitter/nvim-treesitter-context",
+			"danymat/neogen",
 		},
 	})
 
@@ -232,26 +225,6 @@ packer.startup(function(use)
 		"lewis6991/gitsigns.nvim",
 		config = function()
 			require("gitsigns").setup()
-		end,
-	})
-
-	use({
-		"TimUntersberger/neogit",
-		requires = {
-			"nvim-lua/plenary.nvim",
-		},
-		config = function()
-			require("neogit").setup({
-				disable_commit_confirmation = true,
-				disable_context_highlighting = true,
-				disable_signs = true,
-				disable_hint = true,
-			})
-			vim.keymap.set("n", "<leader>gs", function()
-				require("neogit").open({
-					kind = "replace",
-				})
-			end, { noremap = true, silent = true })
 		end,
 	})
 
@@ -284,11 +257,16 @@ packer.startup(function(use)
 		end,
 	})
 
+	use("mhinz/vim-sayonara")
+	use("ThePrimeagen/harpoon")
 	use("editorconfig/editorconfig-vim")
+	use("folke/zen-mode.nvim")
+	use("tpope/vim-fugitive")
 	use("tpope/vim-repeat")
 	use("tpope/vim-abolish")
 	use("tpope/vim-eunuch")
-	-- use("dstein64/vim-startuptime")
+	use("tpope/vim-sleuth")
+	use("mbbill/undotree")
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins

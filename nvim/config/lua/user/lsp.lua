@@ -5,6 +5,21 @@ local inlay_hints = require("inlay-hints")
 
 inlay_hints.setup({
 	renderer = "inlay-hints/render/eol",
+	-- https://github.com/simrat39/inlay-hints.nvim/issues/3
+	eol = {
+		parameter = {
+			separator = ", ",
+			format = function(hints)
+				return string.format(" <- (%s)", hints):gsub(":", "")
+			end,
+		},
+		type = {
+			separator = ", ",
+			format = function(hints)
+				return string.format(" » (%s)", hints):gsub(":", "")
+			end,
+		},
+	},
 })
 
 require("mason").setup()
@@ -32,7 +47,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 	vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 	vim.keymap.set("n", "<leader>gl", vim.diagnostic.open_float, opts)
-	vim.keymap.set("n", "<leader>lr", "<cmd>LspRestart<CR>", opts)
+	vim.keymap.set("n", "<leader>lr", vim.cmd.LspRestart, opts)
 	vim.keymap.set("n", "[d", function()
 		vim.diagnostic.goto_prev({ float = false })
 	end, opts)

@@ -39,11 +39,19 @@ local options = {
 	list = false,
 	listchars = "eol:↲,tab:» ,trail:·,extends:<,precedes:>,conceal:┊,nbsp:␣",
 	grepprg = "rg --vimgrep --smart-case --follow",
-	-- cmdheight = 0, https://github.com/hrsh7th/nvim-cmp/pull/1196
+	background = "dark",
+	termguicolors = true,
 }
 
 vim.opt.shortmess:append("c")
+-- vim.opt.nrformats:append("alpha") -- most of the time I dont want this
 
 for k, v in pairs(options) do
 	vim.opt[k] = v
 end
+
+vim.filetype.add({
+	extension = {
+		tape = "vhs",
+	},
+})

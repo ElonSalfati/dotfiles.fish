@@ -9,21 +9,29 @@ require("nvim-treesitter.configs").setup({
 	},
 	ensure_installed = {
 		"bash",
+		"cpp",
 		"css",
+		"diff",
 		"dockerfile",
 		"fish",
+		-- "gitignore",
 		"go",
 		"gomod",
 		"gowork",
+		"graphql",
 		"hcl",
+		"help",
 		"html",
+		"http",
 		"javascript",
 		"typescript",
 		"tsx",
+		"json",
 		"lua",
 		"make",
 		"markdown",
 		"markdown_inline",
+		"regex",
 		"rust",
 		"scss",
 		"sql",
@@ -63,20 +71,25 @@ require("nvim-treesitter.configs").setup({
 		move = {
 			enable = true,
 			set_jumps = true,
-
 			goto_next_start = {
-				["]p"] = "@parameter.inner",
-				["]]"] = "@function.outer",
+				["]f"] = "@function.outer",
+				["]p"] = "@parameter.outer",
+				["]c"] = "@class.outer",
 			},
 			goto_next_end = {
-				["]["] = "@function.outer",
+				["]F"] = "@function.outer",
+				["]P"] = "@parameter.outer",
+				["]C"] = "@class.outer",
 			},
 			goto_previous_start = {
-				["[p"] = "@parameter.inner",
-				["[["] = "@function.outer",
+				["[f"] = "@function.outer",
+				["[p"] = "@parameter.outer",
+				["[c"] = "@class.outer",
 			},
 			goto_previous_end = {
-				["[]"] = "@function.outer",
+				["[F"] = "@function.outer",
+				["[P"] = "@parameter.outer",
+				["[C"] = "@class.outer",
 			},
 		},
 		select = {
@@ -95,11 +108,5 @@ require("nvim-treesitter.configs").setup({
 				["iv"] = "@variable.inner",
 			},
 		},
-	},
-})
-
-vim.filetype.add({
-	extension = {
-		tape = "vhs",
 	},
 })

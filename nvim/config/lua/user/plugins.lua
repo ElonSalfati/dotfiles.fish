@@ -69,12 +69,6 @@ packer.startup(function(use)
 		"j-hui/fidget.nvim",
 		config = function()
 			require("fidget").setup({
-				text = {
-					spinner = "dots",
-				},
-				window = {
-					blend = 0,
-				},
 			})
 		end,
 	})

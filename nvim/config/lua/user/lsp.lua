@@ -192,27 +192,19 @@ lspconfig.dockerls.setup({
 local runtime_path = vim.split(package.path, ";")
 table.insert(runtime_path, "lua/?.lua")
 table.insert(runtime_path, "lua/?/init.lua")
-lspconfig.sumneko_lua.setup({
+lspconfig.lua_ls.setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
 	settings = {
-		Lua = {
-			runtime = {
-				-- Tell the language server which version of Lua you're using (most likely LuaJIT)
-				version = "LuaJIT",
-				-- Setup your lua path
-				path = runtime_path,
-			},
-			diagnostics = {
-				globals = { "vim" },
-			},
-			workspace = { library = vim.api.nvim_get_runtime_file("", true) },
-			-- Do not send telemetry data containing a randomized but unique identifier
-			telemetry = { enable = false },
-			hint = {
-				enable = true,
-			},
+	  Lua = {
+		completion = {
+		  callSnippet = "Replace",
 		},
+		telemetry = { enable = false },
+		hint = {
+		  enable = true,
+		},
+	  },
 	},
 })
 

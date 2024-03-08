@@ -196,9 +196,13 @@ packer.startup(function(use)
 
 	use({
 		"lukas-reineke/indent-blankline.nvim",
-		config = function()
-			require("indent_blankline").setup({})
-		end,
+		event = "BufReadPost",
+		opts = {
+			char = "│",
+			filetype_exclude = { "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy" },
+			show_trailing_blankline_indent = false,
+			show_current_context = false,
+		},
 	})
 
 	use({

@@ -20,7 +20,7 @@ require("nvim-treesitter.configs").setup({
 		"gowork",
 		"graphql",
 		"hcl",
-		"help",
+		-- "help",
 		"html",
 		"http",
 		"javascript",
